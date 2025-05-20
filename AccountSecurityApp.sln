@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountSecurityApp", "AccountSecurityApp\AccountSecurityApp.csproj", "{2FFA0F3A-FB55-4039-AE2B-F5A1B1C384DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountSecurityApp.Client", "AccountSecurityApp\AccountSecurityApp.Client.csproj", "{2FFA0F3A-FB55-4039-AE2B-F5A1B1C384DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountSecurityApp.API", "AccountSecurityApp.API\AccountSecurityApp.API.csproj", "{B68C982B-850C-4D80-854A-25149AE25510}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2FFA0F3A-FB55-4039-AE2B-F5A1B1C384DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FFA0F3A-FB55-4039-AE2B-F5A1B1C384DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FFA0F3A-FB55-4039-AE2B-F5A1B1C384DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B68C982B-850C-4D80-854A-25149AE25510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B68C982B-850C-4D80-854A-25149AE25510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B68C982B-850C-4D80-854A-25149AE25510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B68C982B-850C-4D80-854A-25149AE25510}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
