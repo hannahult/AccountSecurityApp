@@ -20,7 +20,7 @@ namespace AccountSecurityApp.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
                 return BadRequest("Username and password needed.");
@@ -40,7 +40,26 @@ namespace AccountSecurityApp.API.Controllers
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            return Ok("Register Succeded");
+            return Ok("Register ´succeded");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+                return BadRequest("Username and password needed.");
+
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Username == request.Username);
+
+            if (user == null)
+                return Unauthorized("Wrong username or password.");
+
+            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+            if (!isPasswordCorrect)
+                return Unauthorized("Wrong username or password.");
+
+            return Ok("Login succeded");
         }
     }
 }
