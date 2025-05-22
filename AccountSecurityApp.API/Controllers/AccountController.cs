@@ -23,7 +23,11 @@ namespace AccountSecurityApp.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-                return BadRequest("Användarnamn och lösenord krävs.");
+                return BadRequest("Username and password needed.");
+
+            bool userExists = await _dbContext.Users.AnyAsync(u => u.Username == request.Username);
+            if (userExists)
+                return Conflict("Username is taken");
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
@@ -36,7 +40,7 @@ namespace AccountSecurityApp.API.Controllers
             _dbContext.Users.Add(user);
             await _dbContext.SaveChangesAsync();
 
-            return Ok("Registrering lyckades");
+            return Ok("Register Succeded");
         }
     }
 }
