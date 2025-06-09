@@ -5,6 +5,7 @@ using BCrypt.Net;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AccountSecurityApp.API.Helpers;
 
 namespace AccountSecurityApp.API.Controllers
 {
@@ -28,6 +29,11 @@ namespace AccountSecurityApp.API.Controllers
             bool userExists = await _dbContext.Users.AnyAsync(u => u.Username == request.Username);
             if (userExists)
                 return Conflict("Username is taken");
+
+            if (!PasswordHelper.IsPasswordValid(request.Password, out var passwordError))
+            {
+                return BadRequest(passwordError);
+            }
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
