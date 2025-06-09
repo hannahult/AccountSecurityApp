@@ -1,6 +1,6 @@
 ﻿using AccountSecurityApp.API.DTOs;
 
-namespace AccountSecurityApp.API.Services
+namespace AccountSecurityApp.API.Services.Interfaces
 {
     public interface IUserService
     {
