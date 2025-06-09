@@ -1,11 +1,12 @@
 ﻿using AccountSecurityApp.API.Data;
 using AccountSecurityApp.API.DTOs;
+using AccountSecurityApp.API.Helpers;
 using AccountSecurityApp.API.Models;
+using AccountSecurityApp.API.Services.Interfaces;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AccountSecurityApp.API.Helpers;
 
 namespace AccountSecurityApp.API.Controllers
 {
@@ -13,59 +14,31 @@ namespace AccountSecurityApp.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IUserService _userService;
 
-        public AccountController(AppDbContext dbContext)
+        public AccountController(IUserService userService)
         {
-            _dbContext = dbContext;
+            _userService = userService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO request)
         {
-            if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-                return BadRequest("Username and password needed.");
+            var success = await _userService.RegisterAsync(request);
+            if (!success)
+                return BadRequest("Invalid registration data");
 
-            bool userExists = await _dbContext.Users.AnyAsync(u => u.Username == request.Username);
-            if (userExists)
-                return Conflict("Username is taken");
-
-            if (!PasswordHelper.IsPasswordValid(request.Password, out var passwordError))
-            {
-                return BadRequest(passwordError);
-            }
-
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-            var user = new User
-            {
-                Username = request.Username,
-                PasswordHash = passwordHash
-            };
-
-            _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
-
-            return Ok("Register ´succeded");
+            return Ok("User registered");
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
-            if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-                return BadRequest("Username and password needed.");
+            var result = await _userService.LoginAsync(request);
+            if (result == null)
+                return Unauthorized("Invalid username or password.");
 
-            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Username == request.Username);
-
-            if (user == null)
-                return Unauthorized("Wrong username or password.");
-
-            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
-
-            if (!isPasswordCorrect)
-                return Unauthorized("Wrong username or password.");
-
-            return Ok("Login succeded");
+            return Ok(result);
         }
     }
 }

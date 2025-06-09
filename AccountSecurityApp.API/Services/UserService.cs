@@ -38,12 +38,11 @@ namespace AccountSecurityApp.API.Services
         }
         public async Task<string?> LoginAsync(LoginRequestDTO dto)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == dto.Username);
-            if (user == null)
+            if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
                 return null;
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
-            if (result == PasswordVerificationResult.Failed)
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Username == dto.Username);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 return null;
 
             return "Login successful";
