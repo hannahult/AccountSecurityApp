@@ -1,7 +1,9 @@
 
 using AccountSecurityApp.API.Data;
+using AccountSecurityApp.API.Models;
 using AccountSecurityApp.API.Services;
 using AccountSecurityApp.API.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -17,6 +19,7 @@ namespace AccountSecurityApp.API
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddOpenApi();
 
